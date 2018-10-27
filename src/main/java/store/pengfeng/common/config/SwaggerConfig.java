@@ -31,7 +31,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("CRM接口文档")
+                .title("彭彭和他的小伙伴写的接口")
                 .version("1.0")
                 .build();
     }

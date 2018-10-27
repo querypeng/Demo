@@ -122,7 +122,7 @@ class ConverterPropertyFilter implements PropertyFilter {
             }
         }
     }
-
+    @Override
     public boolean apply(Object source, String name, Object value) {
         return !filterNameList.contains(name);
     }

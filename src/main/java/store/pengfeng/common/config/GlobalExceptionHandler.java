@@ -1,106 +1,57 @@
 package store.pengfeng.common.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
+import com.alibaba.fastjson.JSONArray;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.validation.BindException;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
-import store.pengfeng.common.response.Response;
-import store.pengfeng.common.response.ResponseCode;
-import store.pengfeng.common.utils.ResponseGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
+import java.util.Arrays;
 
+/**
+ * @author pengfeng
+ * Email: pengfeng@rayootech.com
+ */
+
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
-     * 参数异常统一处理
-     */
-    @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
-    @ResponseBody
-    @ResponseStatus(value = HttpStatus.OK)
-    protected Response<Void> handleMethodArgumentNotValidException(Exception e, WebRequest request) {
-
-        // 异常信息
-        List<ObjectError> allErrors;
-        if (e instanceof BindException) {
-            allErrors = ((BindException) e).getAllErrors();
-        } else if (e instanceof MethodArgumentNotValidException) {
-            allErrors = ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors();
-        } else {
-            allErrors = new ArrayList<>();
-        }
-        StringBuilder err = new StringBuilder();
-        for (ObjectError objectError : allErrors) {
-            err.append(objectError.getDefaultMessage());
-            err.append(";");
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        return ResponseGenerator.fail(ResponseCode.PARAM_ERROR.code(), err.toString());
-    }
-
-    /**
-     * 断言异常统一处理
-     */
-    @ExceptionHandler({IllegalArgumentException.class})
-    @ResponseBody
-    @ResponseStatus(value = HttpStatus.OK)
-    protected Response handleIllegalArgumentException(RuntimeException e, WebRequest request) {
-        IllegalArgumentException exception = (IllegalArgumentException) e;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String message = e.getMessage();
-        logger.warn(message, e);
-        return ResponseGenerator.fail(ResponseCode.ASSERT_ERROR.code(), message);
-    }
-
-    /**
-     * 断言异常统一处理
-     */
-    @ExceptionHandler({IllegalStateException.class})
-    @ResponseBody
-    @ResponseStatus(value = HttpStatus.OK)
-    protected Response handleIllegalStateException(RuntimeException e, WebRequest request) {
-        IllegalStateException exception = (IllegalStateException) e;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String message = e.getMessage();
-        logger.warn(message, e);
-        return ResponseGenerator.fail(ResponseCode.ASSERT_ERROR.code(), message);
-    }
-
-    /**
-     * 统一异常处理
+     * 异常统一处理
      */
     @ExceptionHandler({Exception.class})
     @ResponseBody
     @ResponseStatus(value = HttpStatus.OK)
-    protected Response handleOtherException(Exception e, WebRequest request) {
-        this.logErrorMessage(e);
-        return ResponseGenerator.fail(ResponseCode.INTERNAL_SERVER_ERROR.code(), ResponseCode.INTERNAL_SERVER_ERROR.message());
-    }
+    protected ExceptionResponse handelUncaughtException(HttpServletRequest request, Exception exception) {
+        String message = exception.getMessage();
+        log.error(message, exception);
 
-    private void logErrorMessage(Exception e) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        JSONArray array = new JSONArray();
+        Arrays.asList(exception.getStackTrace()).forEach(stackTraceElement ->
+                array.add(stackTraceElement.getClassName() + "(" + stackTraceElement.getMethodName() + ":" + stackTraceElement.getLineNumber() + ")"));
 
-        String message = e.getMessage();
-        logger.error(message, e);
+        if (exception instanceof BindException || exception instanceof MethodArgumentNotValidException) {
+            return new ExceptionResponse(ExceptionEnum.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getCode(), array);
+        }
+
+        if (exception instanceof SQLException) {
+            return new ExceptionResponse(ExceptionEnum.SQL_EXCEPTION.getCode(), array);
+        }
+
+        if (exception instanceof IllegalArgumentException) {
+            return new ExceptionResponse(ExceptionEnum.ILLEGAL_ARGUMENT_EXCEPTION.getCode(), array);
+        }
+
+        if (exception instanceof NullPointerException) {
+            return new ExceptionResponse(ExceptionEnum.NULL_POINT_EXCEPTION.getCode(), array);
+        }
+        return new ExceptionResponse(ExceptionEnum.EXCEPTION.getCode(), array);
     }
 }

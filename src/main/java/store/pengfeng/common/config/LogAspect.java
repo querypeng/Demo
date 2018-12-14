@@ -31,7 +31,7 @@ import java.util.Map;
 public class LogAspect {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Pointcut("execution(* com.pengfeng.controller..*.*(..))")
+    @Pointcut("execution(* store.pengfeng.controller..*.*(..))")
     private void controllerAspect() {
     }
 

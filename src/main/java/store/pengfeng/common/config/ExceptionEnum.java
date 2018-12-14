@@ -7,9 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author leon
- * Email: zoul@sce-re.com
- * Date: 2018-10-15
+ * @author pengfeng
+ * Email: pengfeng@rayootech.com
  */
 @Getter
 public enum ExceptionEnum {

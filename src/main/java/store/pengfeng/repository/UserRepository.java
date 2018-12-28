@@ -1,5 +1,6 @@
 package store.pengfeng.repository;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.repository.CrudRepository;
 import store.pengfeng.domain.User;
 
@@ -12,5 +13,10 @@ import store.pengfeng.domain.User;
  * </pre>
  */
 public interface UserRepository extends CrudRepository<User, Integer> {
-    User findByName(String name);
+    /**
+     * 根据用户名查询用户
+     * @param name
+     * @return
+     */
+    User findByName(@Param("name") String name);
 }

@@ -53,7 +53,7 @@ public class LogAspect {
     @AfterReturning(returning = "response", value = "controllerAspect()")
     public void afterHandle(Object response) {
         logger.info("=========================RESPONSE CONTENT START========================");
-        logger.info("response content is:{}", JSONObject.toJSONString(response));
+        logger.info("VO content is:{}", JSONObject.toJSONString(response));
         logger.info("=========================RESPONSE CONTENT END==========================");
 
     }

@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 @Configuration
 public class DatabaseConfig {
 
+    private static final String CONFIGDIRVERCLASSNAME = "com.mysql.jdbc.jdbc2.optional.MysqlDataSource";
+
     @Value("${spring.datasource.driver-class-name:}")
     private String driverClassName;
 
@@ -33,7 +35,7 @@ public class DatabaseConfig {
 
         // MySQL optimizations, see
         // https://github.com/brettwooldridge/HikariCP/wiki/MySQL-Configuration
-        if ("com.mysql.jdbc.jdbc2.optional.MysqlDataSource".equals(driverClassName)) {
+        if (CONFIGDIRVERCLASSNAME.equals(driverClassName)) {
             config.addDataSourceProperty("cachePrepStmts", true);
             config.addDataSourceProperty("prepStmtCacheSize", 250);
             config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);

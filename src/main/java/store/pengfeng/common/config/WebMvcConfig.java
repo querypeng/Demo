@@ -3,10 +3,12 @@ package store.pengfeng.common.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -14,10 +16,15 @@ import java.util.List;
 
 /**
  * @author pengfeng
- * Email: pengfeng@rayootech.com
  */
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final ObjectMapper objectMapper;
+
+    WebMvcConfig(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -32,6 +39,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
                 SerializerFeature.WriteDateUseDateFormat);
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         converters.add(converter);
     }
 

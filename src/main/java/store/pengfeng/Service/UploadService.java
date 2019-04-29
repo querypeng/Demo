@@ -6,5 +6,5 @@ import store.pengfeng.common.response.Result;
 
 public interface UploadService {
 
-    Result<UploadVO> uploadFile(MultipartFile request,String type);
+    Result<UploadVO> uploadFile(MultipartFile request);
 }

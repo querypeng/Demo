@@ -21,7 +21,7 @@ import static store.pengfeng.common.Constant.SERVICEHOST;
 public class UploadServiceImpl implements UploadService {
 
     @Override
-    public Result<UploadVO> uploadFile(MultipartFile request, String type) {
+    public Result<UploadVO> uploadFile(MultipartFile request) {
         try {
             InputStream inputStream = request.getInputStream();
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -40,8 +40,9 @@ public class UploadServiceImpl implements UploadService {
             // 3、使用 TrackerClient 对象创建连接，获得一个 TrackerServer 对象。
             TrackerServer trackerServer = trackerClient.getConnection();
             // 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
-            StorageClient storageClient = new StorageClient(trackerServer, null);
-
+            StorageServer storageServer = null;
+            StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+            String type = request.getName().substring(request.getName().lastIndexOf("."));
             String[] strings = storageClient.upload_file(bytes, type, null);
             List<String> list = Arrays.asList(strings);
             UploadVO uploadVO = new UploadVO();

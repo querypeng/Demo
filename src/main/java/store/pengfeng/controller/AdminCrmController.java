@@ -24,8 +24,8 @@ public class AdminCrmController {
     private UploadService uploadService;
 
     @PostMapping("/upload/file")
-    public Response<UploadVO> upload(@RequestBody MultipartFile request,String type)  {
-        Result<UploadVO> result = uploadService.uploadFile(request,type);
+    public Response<UploadVO> upload(@RequestBody MultipartFile request)  {
+        Result<UploadVO> result = uploadService.uploadFile(request);
         if (result.isSuccess()) {
             return ResponseGenerator.success(result.getTarget());
         } else {

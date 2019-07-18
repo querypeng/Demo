@@ -1,11 +1,11 @@
 package store.pengfeng;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import tk.mybatis.spring.annotation.MapperScan;
 
@@ -15,10 +15,10 @@ import javax.servlet.MultipartConfigElement;
  * @author pengfeng
  * @date 2018/10/27 0:39
  */
-@Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"store.pengfeng"})
 @EnableSwagger2
 @MapperScan(basePackages = "store.pengfeng.dao")
+@EnableAsync
 public class CrmApplication {
     public static void main(String[] args) {
         SpringApplication newRun= new SpringApplication(CrmApplication.class);

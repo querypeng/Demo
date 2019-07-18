@@ -31,7 +31,6 @@ public class UploadServiceImpl implements UploadService {
                 byteArrayOutputStream.write(buffer, 0, n);
             }
             byte[] bytes = byteArrayOutputStream.toByteArray();
-
             String filePath = new ClassPathResource(CONFIGFEIL).getFile().getAbsolutePath();
             // 1、加载配置文件，配置文件中的内容就是 tracker 服务的地址。
             ClientGlobal.init(filePath);
